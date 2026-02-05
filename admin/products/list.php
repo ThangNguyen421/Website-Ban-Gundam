@@ -1,25 +1,14 @@
 <?php
-// Tên file: admin/products/list.php
 $rootPath = __DIR__ . '/../..';
 
-// 1. Bảo vệ trang (Đi từ products/ qua admin/ đến check_admin.php)
-// __DIR__ . '/../check_admin.php'
 require_once __DIR__ . '/../check_admin.php';
-
-// 2. Bao gồm database.php (Đi từ products/ qua admin/ ra gốc dự án, rồi vào core/)
 require_once $rootPath . '/core/database.php';
-
-// 3. Bao gồm functions.php (Hàm upload file)
 require_once $rootPath . '/core/functions.php';
-
-// 4. Bao gồm ProductModel.php
 require_once $rootPath . '/models/ProductModel.php';
 
-// Khởi tạo Model
 $productModel = new ProductModel($pdo);
-$products = $productModel->getAllProducts(); // Lấy tất cả sản phẩm
+$products = $productModel->getAllProducts();
 
-// Xử lý thông báo (nếu có chuyển hướng từ trang add.php)
 $message = $_GET['msg'] ?? '';
 ?>
 
@@ -105,14 +94,12 @@ $message = $_GET['msg'] ?? '';
     <script>
         function confirmDelete(id) {
             if (confirm('Bạn có chắc chắn muốn xóa sản phẩm ID ' + id + ' này không?')) {
-                // Gán ID sản phẩm vào input ẩn
                 document.getElementById('delete-id').value = id;
-
-                // Gửi form bằng phương thức POST
                 document.getElementById('delete-form').submit();
             }
         }
     </script>
 </body>
+
 
 </html>
