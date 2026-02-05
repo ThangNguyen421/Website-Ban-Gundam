@@ -1,5 +1,4 @@
 <?php
-// product.php - Chi tiết sản phẩm
 session_start();
 
 require_once 'core/database.php';
@@ -12,7 +11,7 @@ if (!$product_id) { header('Location: index.php'); exit; }
 $productModel = new ProductModel($pdo);
 $categoryModel = new CategoryModel($pdo);
 
-$categories = $categoryModel->getAllCategories(); // để navigation đồng bộ
+$categories = $categoryModel->getAllCategories();
 
 $product = $productModel->getProductDetails($product_id);
 
@@ -21,17 +20,14 @@ if (!$product || $product['TrangThai'] !== 'active') {
     exit;
 }
 
-// Related products
 $related_products = $productModel->getActiveProducts($product['MaDanhMuc']);
 $related_products = array_filter($related_products, function ($p) use ($product_id) {
     return $p['MaSanPham'] != $product_id;
 });
 $related_products = array_slice($related_products, 0, 4);
 
-// Increment view count
 $productModel->incrementViewCount($product_id);
 
-// FIX UI bug: điều kiện giá gốc/giá bán (chỉ hiển thị nếu có giảm)
 $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['GiaBan']);
 ?>
 <!DOCTYPE html>
@@ -54,7 +50,6 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
   <div class="container">
     <div class="page-frame">
 
-      <!-- Breadcrumb -->
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Trang chủ</a></li>
@@ -67,9 +62,7 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
         </ol>
       </nav>
 
-      <!-- Product Detail -->
       <div class="row g-4">
-        <!-- Images -->
         <div class="col-lg-6">
           <div class="card mb-3">
             <div class="card-body text-center">
@@ -91,12 +84,10 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
                      class="img-thumbnail w-100"
                      onclick="changeMainImage(this.src)">
               </div>
-              <!-- thêm thumbnail khác nếu có -->
             </div>
           <?php endif; ?>
         </div>
 
-        <!-- Info -->
         <div class="col-lg-6">
           <div class="card">
             <div class="card-body">
@@ -196,7 +187,6 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
         </div>
       </div>
 
-      <!-- Tabs -->
       <div class="row mt-5">
         <div class="col-12">
           <div class="card">
@@ -238,7 +228,6 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
         </div>
       </div>
 
-      <!-- Related -->
       <?php if (!empty($related_products)): ?>
         <div class="row mt-5">
           <div class="col-12">
@@ -282,7 +271,7 @@ $has_discount = !empty($product['GiaGoc']) && ($product['GiaGoc'] > $product['Gi
         </div>
       <?php endif; ?>
 
-    </div><!-- /page-frame -->
+    </div>
   </div>
 </main>
 
@@ -339,3 +328,4 @@ document.getElementById("add-to-cart-form")?.addEventListener("submit", function
 
 </body>
 </html>
+
