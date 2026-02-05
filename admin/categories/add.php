@@ -1,9 +1,8 @@
 <?php
-// Tên file: admin/categories/add.php
 $rootPath = __DIR__ . '/../..'; 
-require_once __DIR__ . '/../check_admin.php'; // Bảo vệ trang Admin (lùi 1 cấp)
-require_once $rootPath . '/core/database.php'; // Lùi 2 cấp
-require_once $rootPath . '/models/ProductModel.php'; // Lùi 2 cấp
+require_once __DIR__ . '/../check_admin.php'; 
+require_once $rootPath . '/core/database.php'; 
+require_once $rootPath . '/models/ProductModel.php'; 
 
 $productModel = new ProductModel($pdo);
 
@@ -23,8 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($success) {
             $message = "Thêm danh mục **" . htmlspecialchars($name) . "** thành công!";
             $messageType = 'success';
-            // Tùy chọn: Chuyển hướng sang trang danh sách danh mục (nếu có list.php)
-            // header('Location: list.php?msg=' . urlencode($message)); exit();
+
         } else {
             $message = "Lỗi: Không thể thêm danh mục vào database. Vui lòng kiểm tra kết nối/lỗi SQL.";
             $messageType = 'danger';
@@ -66,4 +64,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
+
 </html>
