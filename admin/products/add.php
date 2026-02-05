@@ -1,37 +1,21 @@
 <?php
-// Tên file: admin/products/add.php
 $rootPath = __DIR__ . '/../..'; 
 
-// 1. Bảo vệ trang (Đi từ products/ qua admin/ đến check_admin.php)
-// __DIR__ . '/../check_admin.php'
 require_once __DIR__ . '/../check_admin.php'; 
-
-// 2. Bao gồm database.php (Đi từ products/ qua admin/ ra gốc dự án, rồi vào core/)
 require_once $rootPath . '/core/database.php';
-
-// 3. Bao gồm functions.php (Hàm upload file)
 require_once $rootPath . '/core/functions.php';
-
-// 4. Bao gồm ProductModel.php
 require_once $rootPath . '/models/ProductModel.php';
-
-// Khởi tạo Model
 $productModel = new ProductModel($pdo);
-
-// Lấy danh sách danh mục để đổ vào dropdown
 $categories = $productModel->getAllCategories(); 
 
 $message = '';
 $messageType = '';
-$uploadDir = __DIR__ . '/../../public/assets/images/products/'; // Thư mục đích lưu ảnh
-
-// Đảm bảo thư mục lưu ảnh tồn tại
+$uploadDir = __DIR__ . '/../../public/assets/images/products/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // --- BƯỚC 1: XỬ LÝ UPLOAD ẢNH CHÍNH ---
     $mainImageName = null;
     $allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif']; 
 
@@ -46,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "Vui lòng chọn ảnh chính cho sản phẩm.";
         $messageType = 'danger';
     }
-
-    // --- BƯỚC 2: LƯU VÀO DB NẾU UPLOAD THÀNH CÔNG ---
     if ($mainImageName && $messageType !== 'danger') {
         $productData = [
             'MaDanhMuc' => $_POST['category_id'],
@@ -56,22 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'GiaBan' => (float)$_POST['price'],
             'TonKho' => (int)$_POST['stock'],
             'TrangThai' => $_POST['status'] ?? 'active',
-            // Lưu URL tương đối để dùng trong HTML
             'URLAnhChinh' => 'public/assets/images/products/' . $mainImageName 
         ];
 
         $newProductId = $productModel->addProduct($productData); 
 
         if ($newProductId) {
-            // Xử lý upload và lưu ảnh phụ (Nếu bạn có thêm input cho ảnh phụ)
-            // ... (Logic tương tự như trên) ...
-
             $message = "Thêm sản phẩm thành công! ID: " . $newProductId;
             $messageType = 'success';
-            // Tùy chọn: Chuyển hướng đến trang list.php
-            // header('Location: list.php?msg=' . urlencode($message)); exit();
         } else {
-            // Xóa file đã upload nếu DB bị lỗi
             if (file_exists($uploadDir . $mainImageName)) {
                 unlink($uploadDir . $mainImageName);
             }
@@ -151,4 +126,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
+
 </html>
