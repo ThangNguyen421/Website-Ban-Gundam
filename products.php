@@ -1,29 +1,26 @@
 <?php
-// products.php - Danh sách sản phẩm
 session_start();
 
-// Define base path and URL (Cần thiết cho việc include/liên kết)
+
 define('BASE_PATH', dirname(__FILE__));
 define('BASE_URL', 'http://' . $_SERVER['HTTP_HOST'] . str_replace($_SERVER['DOCUMENT_ROOT'], '', BASE_PATH));
 
 require_once 'core/database.php';
-require_once 'core/functions.php'; // Nếu có các hàm hữu ích
+require_once 'core/functions.php'; 
 require_once 'models/ProductModel.php';
 require_once 'models/CategoryModel.php';
 
 $productModel = new ProductModel($pdo);
 $categoryModel = new CategoryModel($pdo);
 
-// Lấy tham số lọc
+
 $category_id = $_GET['category'] ?? null;
 $search = $_GET['q'] ?? null;
 $page = max(1, intval($_GET['page'] ?? 1));
-$per_page = 12; // Số sản phẩm trên mỗi trang
+$per_page = 12;
 
-// Xử lý Lọc và Tìm kiếm
 $products = [];
 if ($category_id) {
-    // Lấy thông tin danh mục hiện tại để hiển thị tiêu đề
     $currentCategory = $categoryModel->getCategoryById($category_id);
     $products = $productModel->getActiveProducts($category_id);
     $page_title = 'Sản phẩm theo Danh mục: ' . htmlspecialchars($currentCategory['TenDanhMuc'] ?? 'Không rõ');
@@ -37,7 +34,6 @@ if ($category_id) {
 
 $categories = $categoryModel->getAllCategories();
 
-// Phân trang
 $total_products = count($products);
 $total_pages = max(1, (int) ceil($total_products / $per_page));
 $page = min($page, $total_pages);
@@ -45,7 +41,6 @@ $page = min($page, $total_pages);
 $offset = ($page - 1) * $per_page;
 $paginated_products = array_slice($products, $offset, $per_page);
 
-// Chuẩn bị URL cơ sở cho phân trang (giữ lại category/search)
 $query = [];
 if (!empty($category_id)) $query['category'] = $category_id;
 if (!empty($search)) $query['q'] = $search;
@@ -63,21 +58,16 @@ $join_page_param = (strpos($base_pagination_url, '?') !== false) ? '&page=' : '?
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?> - Gundam Model Shop</title>
 
-    <!-- Bootstrap trước -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- CSS custom sau cùng để override Bootstrap -->
     <link rel="stylesheet" href="./public/assets/css/styles.css">
 </head>
 
 <body class="page-products">
 
 <?php
-// navigation.php cần được include ở đây.
-// Đảm bảo file navigation.php có thể truy cập biến $categories
 include 'views/layout/navigation.php';
 ?>
 
@@ -102,7 +92,6 @@ include 'views/layout/navigation.php';
 
         <div class="row">
             <div class="col-lg-3">
-                <!-- THÊM filter-card để CSS đổi sang màu xanh ngọc -->
                 <div class="card shadow-sm mb-4 filter-card">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="fas fa-filter me-2"></i> Lọc theo Danh mục</h5>
@@ -229,7 +218,6 @@ include 'views/layout/navigation.php';
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // Add to cart with AJAX
   document.querySelectorAll('.add-to-cart-form').forEach(form => {
     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -243,7 +231,6 @@ include 'views/layout/navigation.php';
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          // Update cart count
           document.querySelectorAll('.cart-count').forEach(span => {
             span.textContent = data.cart_count;
           });
@@ -263,3 +250,4 @@ include 'views/layout/navigation.php';
 
 </body>
 </html>
+
