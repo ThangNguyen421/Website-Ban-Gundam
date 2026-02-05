@@ -1,5 +1,4 @@
 <?php
-// Tên file: admin/orders/detail.php
 $rootPath = __DIR__ . '/../..';
 require_once __DIR__ . '/../check_admin.php';
 require_once $rootPath . '/core/database.php';
@@ -24,7 +23,6 @@ $message = '';
 $messageType = '';
 $currentStatus = $order['TrangThai'];
 
-// Danh sách các trạng thái hợp lệ cho đơn hàng (Cần khớp với DB nếu có Check Constraint)
 $validStatuses = [
     'pending' => 'Chờ xử lý',
     'processing' => 'Đang xử lý',
@@ -33,17 +31,14 @@ $validStatuses = [
     'cancelled' => 'Đã hủy'
 ];
 
-// --- XỬ LÝ CẬP NHẬT TRẠNG THÁI ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
     $newStatus = trim($_POST['new_status']);
 
     if (array_key_exists($newStatus, $validStatuses)) {
-        // Kiểm tra xem trạng thái mới có khác trạng thái cũ không
         if ($newStatus !== $currentStatus) {
             $success = $orderModel->updateOrderStatus((int)$orderId, $newStatus);
 
             if ($success) {
-                // Cập nhật lại thông tin đơn hàng sau khi sửa
                 $order = $orderModel->getOrderDetails((int)$orderId);
                 $currentStatus = $order['TrangThai'];
                 $message = "Cập nhật trạng thái đơn hàng thành công!";
@@ -58,16 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
         $messageType = 'danger';
     }
 }
-// --- KẾT THÚC XỬ LÝ CẬP NHẬT TRẠNG THÁI ---
 
-// Hàm helper để hiển thị màu sắc trạng thái
 function getStatusBadgeClass(string $status)
 {
     $status = strtolower($status);
     if ($status === 'completed') return 'bg-success';
     if ($status === 'processing' || $status === 'shipped') return 'bg-info';
     if ($status === 'cancelled') return 'bg-danger';
-    return 'bg-warning'; // pending
+    return 'bg-warning'; 
 }
 
 ?>
@@ -186,5 +179,6 @@ function getStatusBadgeClass(string $status)
 
     </div>
 </body>
+
 
 </html>
