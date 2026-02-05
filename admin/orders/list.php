@@ -1,13 +1,11 @@
 <?php
-// Tên file: admin/orders/list.php
 $rootPath = __DIR__ . '/../..';
 require_once __DIR__ . '/../check_admin.php';
 require_once $rootPath . '/core/database.php';
 require_once $rootPath . '/models/OrderModel.php';
-require_once $rootPath . '/core/functions.php'; // Nếu cần hàm định dạng
+require_once $rootPath . '/core/functions.php'; 
 
 $orderModel = new OrderModel($pdo);
-// *Yêu cầu: getAllOrders() phải LEFT JOIN với nguoidung và trả về HoTen, EmailNguoiDung*
 $orders = $orderModel->getAllOrders();
 
 $message = $_GET['msg'] ?? null;
@@ -52,15 +50,7 @@ $message = $_GET['msg'] ?? null;
                     </tr>
                 <?php else: ?>
                     <?php foreach ($orders as $order):
-                        // --- Logic ưu tiên hiển thị Tên khách hàng ---
-                        // 1. Ưu tiên TenKhachHang (Nếu là Guest Checkout)
-                        // 2. Nếu không có, dùng HoTen (Nếu là User đã đăng nhập)
                         $customerName = !empty($order['TenKhachHang']) ? $order['TenKhachHang'] : ($order['HoTen'] ?? 'N/A');
-
-                        // --- Logic ưu tiên hiển thị Email khách hàng ---
-                        // 1. Ưu tiên EmailKhachHang (Nếu là Guest Checkout)
-                        // 2. Nếu không có, dùng EmailNguoiDung (Nếu là User đã đăng nhập)
-                        // (Giả sử trường email JOIN từ bảng nguoidung là EmailNguoiDung)
                         $customerEmail = !empty($order['EmailKhachHang']) ? $order['EmailKhachHang'] : ($order['EmailNguoiDung'] ?? 'N/A');
                     ?>
                         <tr>
@@ -96,5 +86,6 @@ $message = $_GET['msg'] ?? null;
         </table>
     </div>
 </body>
+
 
 </html>
