@@ -15,7 +15,6 @@ foreach ($_SESSION['cart'] as $product_id => $item) {
 $cart_items = $_SESSION['cart'];
 $total_amount = 0;
 
-// Cập nhật số lượng
 if (isset($_POST['update_qty'])) {
     $id = $_POST['product_id'];
     $qty = max(1, (int)$_POST['quantity']);
@@ -26,7 +25,6 @@ if (isset($_POST['update_qty'])) {
     exit;
 }
 
-// Xóa sản phẩm
 if (isset($_GET['remove'])) {
     unset($_SESSION['cart'][$_GET['remove']]);
     header("Location: cart.php");
@@ -182,3 +180,4 @@ function changeQty(btn, step){
 
 </body>
 </html>
+
