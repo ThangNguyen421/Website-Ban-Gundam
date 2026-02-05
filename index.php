@@ -1,25 +1,19 @@
 <?php
-// index.php - Trang chủ
 session_start();
 
-// Define base path and URL
 define('BASE_PATH', dirname(__FILE__));
 define('BASE_URL', 'http://' . $_SERVER['HTTP_HOST'] . str_replace($_SERVER['DOCUMENT_ROOT'], '', BASE_PATH));
 
-// Include configuration
 require_once 'core/database.php';
 require_once 'core/functions.php';
 
-// Include models
 require_once 'models/ProductModel.php';
 require_once 'models/CategoryModel.php';
 
-// Initialize models
 $productModel = new ProductModel($pdo);
 $categoryModel = new CategoryModel($pdo);
 
-// Get data for homepage
-$featuredProducts = $productModel->getProductsForHomepage(8); // Lấy 8 sản phẩm mới nhất
+$featuredProducts = $productModel->getProductsForHomepage(8); 
 $categories = $categoryModel->getAllCategories();
 ?>
 
@@ -30,24 +24,15 @@ $categories = $categoryModel->getAllCategories();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gundam Model Shop - Mô Hình Gundam Chính Hãng</title>
-
     <link rel="stylesheet" href="./public/assets/css/styles.css">
-
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Custom CSS -->
-
 </head>
 
 <body>
 
     <?php include 'views/layout/navigation.php'; ?>
 
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
             <h1 class="display-4 fw-bold mb-3">Mô Hình Gundam Chính Hãng</h1>
@@ -61,7 +46,6 @@ $categories = $categoryModel->getAllCategories();
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="py-4">
         <div class="container">
             <?php if (isset($_SESSION['success_message'])): ?>
@@ -80,10 +64,6 @@ $categories = $categoryModel->getAllCategories();
                 <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
 
-            <!-- Categories Section -->
-            <!-- <section class="categories-section mb-5">
-                <h2 class="text-center mb-4">Danh Mục Sản Phẩm</h2>
-                <div class="row">
                     <?php if ($categories && count($categories) > 0): ?>
                         <?php foreach ($categories as $category): ?>
                             <div class="col-md-3 col-sm-6 mb-4">
@@ -115,7 +95,6 @@ $categories = $categoryModel->getAllCategories();
                 </div>
             </section> -->
 
-            <!-- Products Section -->
             <section id="products" class="products-section">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Sản Phẩm Mới Nhất</h2>
@@ -131,12 +110,10 @@ $categories = $categoryModel->getAllCategories();
                                 <div class="card product-card h-100">
                                     <!-- Product Image -->
                                     <?php if (!empty($product['URLAnhChinh'])): ?>
-                                        <!-- START: ĐÃ SỬA LỖI ĐƯỜNG DẪN ẢNH CHÍNH (URLAnhChinh) -->
                                         <img src="<?php echo htmlspecialchars($product['URLAnhChinh']); ?>"
                                             alt="<?php echo htmlspecialchars($product['TenSanPham']); ?>"
                                             class="img-fluid rounded"
                                             id="main-product-image">
-                                        <!-- END: ĐÃ SỬA LỖI ĐƯỜNG DẪN ẢNH CHÍNH (URLAnhChinh) -->
                                     <?php else: ?>
                                         <img src="assets/images/no-image.jpg"
                                             alt="No image"
@@ -144,7 +121,6 @@ $categories = $categoryModel->getAllCategories();
                                     <?php endif; ?>
 
                                     <div class="card-body d-flex flex-column">
-                                        <!-- Product Name -->
                                         <h5 class="card-title">
                                             <a href="product.php?id=<?php echo $product['MaSanPham']; ?>"
                                                 class="text-decoration-none text-dark">
@@ -152,21 +128,18 @@ $categories = $categoryModel->getAllCategories();
                                             </a>
                                         </h5>
 
-                                        <!-- Product Description -->
                                         <?php if (!empty($product['MoTa'])): ?>
                                             <p class="card-text text-muted small flex-grow-1">
                                                 <?php echo htmlspecialchars(substr($product['MoTa'], 0, 80)) . '...'; ?>
                                             </p>
                                         <?php endif; ?>
 
-                                        <!-- Product Price -->
                                         <div class="product-price mb-3">
                                             <span class="fw-bold fs-5 text-primary">
                                                 <?php echo number_format($product['GiaBan'], 0, ',', '.') . ' VNĐ'; ?>
                                             </span>
                                         </div>
 
-                                        <!-- Stock Info -->
                                         <div class="mb-3">
                                             <small class="text-muted">
                                                 <i class="fas fa-box me-1"></i>
@@ -174,7 +147,6 @@ $categories = $categoryModel->getAllCategories();
                                             </small>
                                         </div>
 
-                                        <!-- Action Buttons -->
                                         <div class="d-grid gap-2 mt-auto">
                                             <?php if ($product['TonKho'] > 0 && $product['TrangThai'] === 'active'): ?>
                                                 <form action="add_to_cart.php" method="POST" class="add-to-cart-form">
@@ -210,7 +182,6 @@ $categories = $categoryModel->getAllCategories();
                 </div>
             </section>
 
-            <!-- Features Section -->
             <section class="features-section bg-light py-5 mt-5 rounded">
                 <div class="container">
                     <h2 class="text-center mb-5">Tại Sao Chọn Chúng Tôi?</h2>
@@ -249,7 +220,6 @@ $categories = $categoryModel->getAllCategories();
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -318,12 +288,9 @@ $categories = $categoryModel->getAllCategories();
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom JS -->
     <script>
-        // Add to cart with AJAX
         document.querySelectorAll('.add-to-cart-form').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -337,12 +304,10 @@ $categories = $categoryModel->getAllCategories();
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Update cart count
                             document.querySelectorAll('.cart-count').forEach(span => {
                                 span.textContent = data.cart_count;
                             });
 
-                            // Show success message
                             alert('Đã thêm vào giỏ hàng!');
                         } else {
                             alert('Có lỗi xảy ra: ' + data.message);
@@ -355,13 +320,11 @@ $categories = $categoryModel->getAllCategories();
             });
         });
 
-        // Initialize tooltips
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -380,5 +343,6 @@ $categories = $categoryModel->getAllCategories();
         });
     </script>
 </body>
+
 
 </html>
