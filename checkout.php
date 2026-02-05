@@ -8,7 +8,6 @@ require_once "models/ProductModel.php";
 $orderModel = new OrderModel($pdo);
 $productModel = new ProductModel($pdo);
 
-// Nếu giỏ hàng trống → không cho checkout
 if (!isset($_SESSION["cart"]) || empty($_SESSION["cart"])) {
     header("Location: cart.php");
     exit();
@@ -16,21 +15,17 @@ if (!isset($_SESSION["cart"]) || empty($_SESSION["cart"])) {
 
 $cart_items = $_SESSION["cart"];
 
-// Tính tổng giá trị đơn hàng
 $final_total = 0;
 foreach ($cart_items as $item) {
     $final_total += $item["price"] * $item["quantity"];
 }
 
-// Các biến cần thiết cho hiển thị
-$total_amount = $final_total;     // Tạm tính
-$shipping_fee = 0;                // Phí vận chuyển (nếu có)
+$total_amount = $final_total;    
+$shipping_fee = 0;                
 
 
-// Nếu submit form đặt hàng
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // THU THẬP DỮ LIỆU FORM
     $data = [
         "MaNguoiDung" => null,
         "TenKhachHang" => trim($_POST["name"]),
@@ -40,14 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         "PhuongThucThanhToan" => $_POST["payment_method"],
     ];
 
-    // 1) TẠO ĐƠN HÀNG (BẢNG donhang)
     $orderId = $orderModel->createOrder($data, $final_total);
 
     if (!$orderId) {
         die("Lỗi tạo đơn hàng. Vui lòng thử lại sau.");
     }
 
-    // 2) CHUẨN HÓA DỮ LIỆU CART CHO createOrderDetails()
     $orderItems = [];
     foreach ($cart_items as $product_id => $item) {
         $orderItems[] = [
@@ -57,19 +50,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ];
     }
 
-    // 3) LƯU CHI TIẾT ĐƠN HÀNG
     $orderModel->createOrderDetails($orderId, $orderItems);
 
-    // 4) GIẢM TỒN KHO
     foreach ($orderItems as $it) {
         $productModel->decreaseStock($it["id"], $it["quantity"]);
     }
 
-    // 5) XÓA GIỎ HÀNG
     unset($_SESSION["cart"]);
     
 
-    // 6) CHUYỂN HƯỚNG SANG TRANG XÁC NHẬN
     header("Location: order_confirmation.php?id=" . $orderId);
     exit();
 }
@@ -243,5 +232,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 
 </body>
+
 
 </html>
