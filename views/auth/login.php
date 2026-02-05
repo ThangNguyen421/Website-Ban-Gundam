@@ -1,45 +1,36 @@
 <?php
 session_start(); 
 
-// Bao gồm các file logic cần thiết (Giữ nguyên đường dẫn)
 require_once __DIR__ . '/../../core/database.php';
 require_once __DIR__ . '/../../models/UserModel.php';
 
-// Khởi tạo UserModel
 $userModel = new UserModel($pdo); 
 
 $message = '';
 
-// Kiểm tra nếu có thông báo thành công từ trang đăng ký
 if (isset($_SESSION['success_message'])) {
     $successMessage = $_SESSION['success_message'];
-    unset($_SESSION['success_message']); // Xóa thông báo sau khi hiển thị
+    unset($_SESSION['success_message']);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    // 1. Kiểm tra Email/Mật khẩu
     $loggedInUser = $userModel->loginUser($email, $password);
     
     if ($loggedInUser) {
-        // 2. Đăng nhập thành công: Thiết lập Session
         $_SESSION['user_id'] = $loggedInUser['MaNguoiDung'];
         $_SESSION['user_role'] = $loggedInUser['VaiTro'];
         $_SESSION['user_fullname'] = $loggedInUser['HoTen'];
 
-        // 3. Chuyển hướng theo vai trò (Admin hay Customer)
         if ($loggedInUser['VaiTro'] === 'admin') {
-            // Chuyển hướng đến Dashboard Admin
             header('Location: ../../admin/index.php'); 
         } else {
-            // Chuyển hướng đến Trang chủ (Customer)
             header('Location: ../../../index.php'); 
         }
         exit();
     } else {
-        // 4. Đăng nhập thất bại
         $message = "Email hoặc mật khẩu không đúng. Vui lòng thử lại.";
     }
 }
@@ -107,7 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Mã JavaScript cho chức năng hiện/ẩn mật khẩu
     document.getElementById('togglePassword').addEventListener('change', function() {
         const input = document.getElementById('password');
         input.type = this.checked ? 'text' : 'password';
@@ -115,4 +105,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 </body>
 </html>
+
 
