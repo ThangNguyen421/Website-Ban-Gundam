@@ -1,5 +1,4 @@
 <?php
-// Tên file: admin/products/edit.php
 $rootPath = __DIR__ . '/../..';
 require_once __DIR__ . '/../check_admin.php';
 require_once $rootPath . '/core/database.php';
@@ -26,14 +25,10 @@ $message = '';
 $messageType = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // 1. Lấy giá trị trạng thái từ form POST (đảm bảo nó luôn là một trong 3 giá trị tiếng Anh)
-    // Nếu có lỗi POST, chúng ta sẽ dựa vào giá trị cũ để chuẩn hóa
     $trangThaiValue = $_POST['TrangThai'] ?? $product['TrangThai'];
 
-    $trangThaiStandardized = 'hidden'; // Mặc định an toàn
+    $trangThaiStandardized = 'hidden';
 
-    // Ép buộc giá trị thành tiếng Anh, lowercase (cần thiết vì DB yêu cầu)
     $trangThaiLower = strtolower($trangThaiValue);
 
     if ($trangThaiLower === 'active' || $trangThaiLower === 'hiện') {
@@ -41,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($trangThaiLower === 'pending' || $trangThaiLower === 'chờ duyệt') {
         $trangThaiStandardized = 'pending';
     }
-    // Các giá trị khác (inactive, ẩn) sẽ được xử lý ngầm thành 'inactive' (mặc định)
 
     $data = [
         'MaDanhMuc' => $_POST['MaDanhMuc'] ?? $product['MaDanhMuc'],
@@ -49,12 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'GiaBan' => (float)($_POST['GiaBan'] ?? $product['GiaBan']),
         'MoTa' => trim($_POST['MoTa'] ?? $product['MoTa']),
         'TonKho' => (int)($_POST['TonKho'] ?? $product['TonKho']),
-        'TrangThai' => $trangThaiStandardized // CHẮC CHẮN GIÁ TRỊ LÀ TIẾNG ANH
+        'TrangThai' => $trangThaiStandardized
     ];
 
     $newImagePath = $product['URLAnhChinh'];
-
-    // --- XỬ LÝ UPLOAD ẢNH MỚI (Giống như trước) ---
     if (isset($_FILES['AnhChinh']) && $_FILES['AnhChinh']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = $rootPath . '/public/assets/images/products/';
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -76,11 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $messageType = 'danger';
         }
     }
-    // --- KẾT THÚC UPLOAD ẢNH MỚI ---
 
-    // 3. Gọi hàm cập nhật
     if ($messageType !== 'danger') {
-        $success = $productModel->updateProduct((int)$productId, $data); // Dòng 73 (gần đúng)
+        $success = $productModel->updateProduct((int)$productId, $data); 
 
         if ($success) {
             header('Location: list.php?msg=' . urlencode('Cập nhật sản phẩm ID ' . $productId . ' thành công.'));
@@ -92,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Nếu POST bị lỗi, ưu tiên hiển thị dữ liệu đã gửi từ POST
 $formData = $_POST ?: $product;
 
 ?>
@@ -150,10 +139,8 @@ $formData = $_POST ?: $product;
                 <label for="TrangThai" class="form-label">Trạng thái (*)</label>
                 <select class="form-select" id="TrangThai" name="TrangThai" required>
                     <?php
-                    // Lấy giá trị, chuyển về lowercase để so sánh
                     $selectedStatus = strtolower($formData['TrangThai']);
 
-                    // Chuẩn hóa giá trị cũ thành tiếng Anh nếu nó là tiếng Việt
                     if ($selectedStatus === 'hiện') $selectedStatus = 'active';
                     elseif ($selectedStatus === 'ẩn') $selectedStatus = 'hidden';
                     elseif ($selectedStatus === 'chờ duyệt') $selectedStatus = 'pending';
@@ -197,5 +184,6 @@ $formData = $_POST ?: $product;
         </form>
     </div>
 </body>
+
 
 </html>
