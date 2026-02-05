@@ -1,10 +1,9 @@
 <?php
-// Tên file: admin/reports/sales_report.php
 $rootPath = __DIR__ . '/../..';
 require_once __DIR__ . '/../check_admin.php';
 require_once $rootPath . '/core/database.php';
 require_once $rootPath . '/models/ReportModel.php';
-require_once $rootPath . '/core/functions.php'; // Cho hàm định dạng tiền tệ
+require_once $rootPath . '/core/functions.php'; 
 
 $reportModel = new ReportModel($pdo);
 
@@ -12,11 +11,9 @@ $startDate = $_GET['start_date'] ?? null;
 $endDate = $_GET['end_date'] ?? null;
 $limit = 10;
 
-// Lấy dữ liệu báo cáo
 $totalRevenue = $reportModel->getTotalRevenue($startDate, $endDate);
 $topSelling = $reportModel->getTopSellingProducts($limit);
 
-// Hàm format tiền tệ (giả định có trong core/functions.php)
 if (!function_exists('format_currency')) {
     function format_currency($amount)
     {
@@ -102,5 +99,6 @@ if (!function_exists('format_currency')) {
         </table>
     </div>
 </body>
+
 
 </html>
