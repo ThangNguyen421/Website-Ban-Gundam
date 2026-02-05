@@ -1,5 +1,4 @@
 <?php
-// Tên file: models/ReportModel.php
 class ReportModel {
     private $pdo;
 
@@ -7,12 +6,7 @@ class ReportModel {
         $this->pdo = $pdo;
     }
 
-    /**
-     * Lấy tổng doanh thu theo khoảng thời gian
-     * @param string|null $startDate Ngày bắt đầu (YYYY-MM-DD)
-     * @param string|null $endDate Ngày kết thúc (YYYY-MM-DD)
-     * @return float Tổng doanh thu
-     */
+    // Lấy tổng doanh thu theo khoảng thời gian
     public function getTotalRevenue($startDate = null, $endDate = null) {
         $sql = "SELECT SUM(TongGia) AS TotalRevenue
                 FROM DonHang
@@ -35,11 +29,7 @@ class ReportModel {
         return (float)($result['TotalRevenue'] ?? 0);
     }
 
-    /**
-     * Lấy danh sách sản phẩm bán chạy nhất
-     * @param int $limit Số lượng sản phẩm muốn hiển thị
-     * @return array Danh sách sản phẩm bán chạy
-     */
+    //Lấy danh sách sản phẩm bán chạy nhất
     public function getTopSellingProducts(int $limit = 10) {
         $sql = "SELECT 
                     sp.MaSanPham,
@@ -55,7 +45,6 @@ class ReportModel {
                 LIMIT ?";
         
         $stmt = $this->pdo->prepare($sql);
-        // Do LIMIT cần bind là kiểu int, ta dùng bindValue hoặc ép kiểu
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
         $stmt->execute();
         
