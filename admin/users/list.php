@@ -1,22 +1,19 @@
 <?php
-// Tên file: admin/users/list.php
 $rootPath = __DIR__ . '/../..';
 require_once __DIR__ . '/../check_admin.php';
 require_once $rootPath . '/core/database.php';
 require_once $rootPath . '/models/UserModel.php';
-require_once $rootPath . '/core/functions.php'; // Nếu cần hàm định dạng
+require_once $rootPath . '/core/functions.php';
 
 $userModel = new UserModel($pdo);
 $users = $userModel->getAllUsers();
 
 $message = $_GET['msg'] ?? null;
 
-// Xử lý thay đổi vai trò
 if (isset($_GET['action']) && $_GET['action'] === 'change_role' && isset($_GET['id']) && isset($_GET['role'])) {
     $userId = (int)$_GET['id'];
     $newRole = strtolower($_GET['role']);
 
-    // Không cho phép thay đổi vai trò của chính admin đang đăng nhập (MaNguoiDung = 4 trong dữ liệu mẫu)
     if ($userId == $_SESSION['user_id'] || $userId == 4) {
         $message = 'Không thể thay đổi vai trò của chính bạn hoặc tài khoản mặc định.';
     } elseif ($userModel->updateRole($userId, $newRole)) {
@@ -108,5 +105,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'change_role' && isset($_GET['
 
     </div>
 </body>
+
 
 </html>
