@@ -64,6 +64,9 @@ $categories = $categoryModel->getAllCategories();
                 <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
 
+            <section class="categories-section mb-5">
+                <h2 class="mb-4">Danh Mục Sản Phẩm</h2>
+                <div class="row">
                     <?php if ($categories && count($categories) > 0): ?>
                         <?php foreach ($categories as $category): ?>
                             <div class="col-md-3 col-sm-6 mb-4">
@@ -74,10 +77,9 @@ $categories = $categoryModel->getAllCategories();
                                         </div>
                                         <h5 class="card-title"><?php echo htmlspecialchars($category['TenDanhMuc']); ?></h5>
                                         <p class="card-text text-muted">
-                                            <?php echo isset($category['MoTa']) ? htmlspecialchars(substr($category['MoTa'], 0, 100)) . '...' : ''; ?>
+                                            <?php echo isset($category['MoTa']) ? htmlspecialchars(mb_substr($category['MoTa'], 0, 100, 'UTF-8')) . '...' : ''; ?>
                                         </p>
-                                        <a href="products.php?category=<?php echo $category['MaDanhMuc']; ?>"
-                                            class="btn btn-outline-primary">
+                                        <a href="products.php?category=<?php echo $category['MaDanhMuc']; ?>" class="btn btn-outline-primary">
                                             Xem sản phẩm <i class="fas fa-arrow-right ms-1"></i>
                                         </a>
                                     </div>
@@ -87,13 +89,12 @@ $categories = $categoryModel->getAllCategories();
                     <?php else: ?>
                         <div class="col-12 text-center">
                             <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Chưa có danh mục nào.
+                                <i class="fas fa-info-circle me-2"></i> Chưa có danh mục nào.
                             </div>
                         </div>
                     <?php endif; ?>
                 </div>
-            </section> -->
+            </section>
 
             <section id="products" class="products-section">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -108,29 +109,26 @@ $categories = $categoryModel->getAllCategories();
                         <?php foreach ($featuredProducts as $product): ?>
                             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card h-100">
-                                    <!-- Product Image -->
                                     <?php if (!empty($product['URLAnhChinh'])): ?>
                                         <img src="<?php echo htmlspecialchars($product['URLAnhChinh']); ?>"
-                                            alt="<?php echo htmlspecialchars($product['TenSanPham']); ?>"
-                                            class="img-fluid rounded"
-                                            id="main-product-image">
+                                             alt="<?php echo htmlspecialchars($product['TenSanPham']); ?>"
+                                             class="img-fluid rounded main-product-image">
                                     <?php else: ?>
-                                        <img src="assets/images/no-image.jpg"
-                                            alt="No image"
-                                            class="img-fluid rounded">
+                                        <img src="./public/assets/images/no-image.jpg"
+                                             alt="No image"
+                                             class="img-fluid rounded">
                                     <?php endif; ?>
 
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title">
-                                            <a href="product.php?id=<?php echo $product['MaSanPham']; ?>"
-                                                class="text-decoration-none text-dark">
+                                            <a href="product.php?id=<?php echo $product['MaSanPham']; ?>" class="text-decoration-none text-dark">
                                                 <?php echo htmlspecialchars($product['TenSanPham']); ?>
                                             </a>
                                         </h5>
 
                                         <?php if (!empty($product['MoTa'])): ?>
                                             <p class="card-text text-muted small flex-grow-1">
-                                                <?php echo htmlspecialchars(substr($product['MoTa'], 0, 80)) . '...'; ?>
+                                                <?php echo htmlspecialchars(mb_substr($product['MoTa'], 0, 80, 'UTF-8')) . '...'; ?>
                                             </p>
                                         <?php endif; ?>
 
@@ -142,8 +140,7 @@ $categories = $categoryModel->getAllCategories();
 
                                         <div class="mb-3">
                                             <small class="text-muted">
-                                                <i class="fas fa-box me-1"></i>
-                                                Còn lại: <?php echo $product['TonKho']; ?> sản phẩm
+                                                <i class="fas fa-box me-1"></i> Còn lại: <?php echo $product['TonKho']; ?> sản phẩm
                                             </small>
                                         </div>
 
@@ -162,8 +159,7 @@ $categories = $categoryModel->getAllCategories();
                                                 </button>
                                             <?php endif; ?>
 
-                                            <a href="product.php?id=<?php echo $product['MaSanPham']; ?>"
-                                                class="btn btn-outline-secondary">
+                                            <a href="product.php?id=<?php echo $product['MaSanPham']; ?>" class="btn btn-outline-secondary">
                                                 <i class="fas fa-eye me-2"></i> Xem chi tiết
                                             </a>
                                         </div>
@@ -174,8 +170,7 @@ $categories = $categoryModel->getAllCategories();
                     <?php else: ?>
                         <div class="col-12 text-center">
                             <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Chưa có sản phẩm nào. Hãy thêm sản phẩm từ trang quản trị.
+                                <i class="fas fa-exclamation-triangle me-2"></i> Chưa có sản phẩm nào. Hãy thêm sản phẩm từ trang quản trị.
                             </div>
                         </div>
                     <?php endif; ?>
@@ -243,8 +238,7 @@ $categories = $categoryModel->getAllCategories();
                         <?php if ($categories): ?>
                             <?php foreach (array_slice($categories, 0, 4) as $category): ?>
                                 <li>
-                                    <a href="products.php?category=<?php echo $category['MaDanhMuc']; ?>"
-                                        class="text-white-50 text-decoration-none">
+                                    <a href="products.php?category=<?php echo $category['MaDanhMuc']; ?>" class="text-white-50 text-decoration-none">
                                         <?php echo htmlspecialchars($category['TenDanhMuc']); ?>
                                     </a>
                                 </li>
@@ -281,8 +275,7 @@ $categories = $categoryModel->getAllCategories();
                     <p class="mb-0">&copy; <?php echo date('Y'); ?> TNT Gundam Store. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <img src="<?php echo BASE_URL; ?>/public/assets/images/payment-methods.png"
-                        alt="Payment Methods" height="30" onerror="this.style.display='none'">
+                    <img src="<?php echo BASE_URL; ?>/public/assets/images/payment-methods.png" alt="Payment Methods" height="30" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
@@ -294,7 +287,6 @@ $categories = $categoryModel->getAllCategories();
         document.querySelectorAll('.add-to-cart-form').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-
                 const formData = new FormData(this);
 
                 fetch('add_to_cart.php', {
@@ -307,7 +299,6 @@ $categories = $categoryModel->getAllCategories();
                             document.querySelectorAll('.cart-count').forEach(span => {
                                 span.textContent = data.cart_count;
                             });
-
                             alert('Đã thêm vào giỏ hàng!');
                         } else {
                             alert('Có lỗi xảy ra: ' + data.message);
@@ -328,7 +319,6 @@ $categories = $categoryModel->getAllCategories();
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
 
@@ -343,6 +333,4 @@ $categories = $categoryModel->getAllCategories();
         });
     </script>
 </body>
-
-
 </html>
